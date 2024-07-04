@@ -18,7 +18,7 @@ public class ConcertTicket extends TicketUID implements Printable, Shareable {
     private static final int WEIGHT_PRECISION = 3;
 
     private String concertTicketId;
-    @NullableWarning(key = "Variable [concertHall] is null in [Ticket]!”")
+    @NullableWarning(key = "Variable [concertHall] is null in [Ticket]!")
     private String concertHall;
     private int eventCode;
     private long ticketPurchaseTime;

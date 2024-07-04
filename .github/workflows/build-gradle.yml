@@ -1,0 +1,18 @@
+name: Build with Gradle and run
+on: [push, workflow_dispatch]
+
+jobs:
+  build_with_gradle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Repo
+        uses: actions/checkout@v4.1.5
+      - name: Setup Java
+        uses: actions/setup-java@v4.2.1
+        with:
+          java-version: 21
+          distribution: 'temurin'
+      - name: Build Project with Gradle
+        run: gradle clean build
+      - name: Run Application
+        run: java -jar build/libs/java-trainee-edu-1.0-SNAPSHOT.jar
