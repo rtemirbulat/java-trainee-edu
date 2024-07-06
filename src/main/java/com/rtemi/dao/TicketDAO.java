@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TicketDAO {
-    private static final String URL = "jdbc:postgresql://database-2.ctcue0gs2qe2.eu-central-1.rds.amazonaws.com:5432/my_ticket_service_db";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "6OHb4UakpeCCrBZq35ag";
+    private static final String URL = "jdbc:postgresql://:5432/my_ticket_service_db";
+    private static final String USER = "admin";
+    private static final String PASSWORD = "secret";
 
     public void saveTicket(int userId, String ticketType) {
         String query = "INSERT INTO public.Ticket (user_id, ticket_type) VALUES (?, ?::ticket_type)";
