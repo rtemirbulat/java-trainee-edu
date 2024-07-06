@@ -1,5 +1,5 @@
 package com.rtemi.model;
-import java.util.Arrays;
+
 import java.util.Arrays;
 
 /**

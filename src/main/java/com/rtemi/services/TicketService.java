@@ -1,11 +1,10 @@
 package com.rtemi.services;
 
 import com.rtemi.interfaces.Printable;
-import com.rtemi.model.TicketUID;
 import com.rtemi.model.ConcertTicket;
+import com.rtemi.model.TicketUID;
 import com.rtemi.model.entity.Admin;
 import com.rtemi.model.entity.User;
-
 
 import java.math.BigDecimal;
 import java.util.Arrays;

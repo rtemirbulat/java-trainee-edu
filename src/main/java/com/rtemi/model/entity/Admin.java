@@ -1,8 +1,8 @@
 package com.rtemi.model.entity;
 
 import com.rtemi.interfaces.Printable;
-import com.rtemi.model.TicketUID;
 import com.rtemi.model.ConcertTicket;
+import com.rtemi.model.TicketUID;
 import com.rtemi.model.enums.Role;
 
 public class Admin extends TicketUID implements Printable {

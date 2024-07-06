@@ -2,7 +2,6 @@ package com.rtemi.model;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class BusTicket extends TicketUID {
     String ticketClass;
