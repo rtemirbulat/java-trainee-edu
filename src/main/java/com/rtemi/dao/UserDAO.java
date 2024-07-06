@@ -5,9 +5,9 @@ import com.rtemi.model.User;
 import java.sql.*;
 
 public class UserDAO {
-    private static final String URL = "jdbc:postgresql://database-2.ctcue0gs2qe2.eu-central-1.rds.amazonaws.com:5432/my_ticket_service_db";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "6OHb4UakpeCCrBZq35ag";
+    private static final String URL = "jdbc:postgresql://:5432/my_ticket_service_db";
+    private static final String USER = "";
+    private static final String PASSWORD = "";
 
     public void saveUser(String name) throws ClassNotFoundException {
         Class.forName("org.postgresql.Driver");
