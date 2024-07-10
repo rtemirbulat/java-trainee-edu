@@ -1,7 +1,5 @@
 package com.rtemi.model;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 public abstract class TicketUID {
     private int ticketUid;
     protected TicketUID(){

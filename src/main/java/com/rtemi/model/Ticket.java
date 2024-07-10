@@ -26,9 +26,8 @@ public class Ticket {
     public Ticket(int id, User user, TicketType ticketType, Timestamp creationDate) {
         this.id = id;
         this.user = user;
-        this.ticketType = ticketType;
-        this.creationDate = creationDate;
-    }
+
+
 
     public Ticket(int id, TicketType ticketType) {
         this.id = id;
@@ -45,11 +44,11 @@ public class Ticket {
 
     public Ticket() {
 
-    }
 
     public void setId(int id) {
         this.id = id;
     }
+
 
     public int getId() {
         return id;
@@ -64,11 +63,21 @@ public class Ticket {
     }
 
 
-    public Timestamp getCreationDate() {
-        return creationDate;
+
+    public int getUserId() {
+        return userId;
     }
 
-    public void setCreationDate(Timestamp creationDate) {
-        this.creationDate = creationDate;
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getTicketType() {
+        return ticketType;
+    }
+
+    public void setTicketType(String ticketType) {
+        this.ticketType = ticketType;
     }
 }
+

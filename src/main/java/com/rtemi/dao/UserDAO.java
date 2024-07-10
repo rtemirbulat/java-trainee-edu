@@ -76,8 +76,4 @@ public class UserDAO {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
-        }
-    }
-
 }

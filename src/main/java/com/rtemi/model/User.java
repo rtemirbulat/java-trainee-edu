@@ -1,6 +1,5 @@
 package com.rtemi.model;
 
-
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
@@ -49,4 +48,5 @@ public class User {
     public int getId() {
         return id;
     }
+
 }

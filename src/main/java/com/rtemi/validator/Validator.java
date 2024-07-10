@@ -1,18 +1,20 @@
 package com.rtemi.validator;
 
-import static java.util.logging.Logger.getLogger;
-
 import com.rtemi.loaders.JsonDataLoader;
 import com.rtemi.model.BusTicket;
 import com.rtemi.model.enums.ErrorType;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.util.logging.Logger.getLogger;
 
 
 public class Validator {

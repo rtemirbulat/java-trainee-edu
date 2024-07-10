@@ -1,11 +1,11 @@
 package com.rtemi.dao;
+
 import com.rtemi.model.Ticket;
 import com.rtemi.model.enums.TicketType;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,9 +75,6 @@ public class TicketDAO {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
-        }
-    }
 
     public void retrieveAllTickets() {
         try (Session session = sessionFactory.openSession()) {
@@ -89,6 +86,4 @@ public class TicketDAO {
             }
         }
     }
-
-
 }
