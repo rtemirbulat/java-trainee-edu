@@ -1,27 +1,68 @@
 package com.rtemi.model;
 
+import com.rtemi.model.enums.TicketType;
+import jakarta.persistence.*;
+
 import java.sql.Timestamp;
 
+@Entity
+@Table (name = "ticket")
 public class Ticket {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int userId;
-    private String ticketType;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ticket_type")
+    private TicketType ticketType;
+
+    @Column(name = "creation_date")
     private Timestamp creationDate;
 
-    public Ticket(int id, int userId, String ticketType, Timestamp creationDate) {
+    public Ticket(int id, User user, TicketType ticketType, Timestamp creationDate) {
         this.id = id;
-        this.userId = userId;
+        this.user = user;
+
+
+
+    public Ticket(int id, TicketType ticketType) {
+        this.id = id;
         this.ticketType = ticketType;
-        this.creationDate = creationDate;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Ticket() {
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public TicketType getTicketType() {
+        return ticketType;
     }
+
+    public void setTicketType(TicketType ticketType) {
+        this.ticketType = ticketType;
+    }
+
+
 
     public int getUserId() {
         return userId;
@@ -38,12 +79,5 @@ public class Ticket {
     public void setTicketType(String ticketType) {
         this.ticketType = ticketType;
     }
-
-    public Timestamp getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Timestamp creationDate) {
-        this.creationDate = creationDate;
-    }
 }
+

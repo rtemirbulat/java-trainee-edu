@@ -1,82 +1,79 @@
 package com.rtemi.dao;
-
+import com.rtemi.model.Ticket;
 import com.rtemi.model.User;
+import com.rtemi.model.enums.TicketType;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 
-import java.sql.*;
+import java.util.List;
 
 public class UserDAO {
-    private static final String URL = "jdbc:postgresql://:5432/my_ticket_service_db";
-    private static final String USER = "";
-    private static final String PASSWORD = "";
+    private SessionFactory sessionFactory;
 
-    public void saveUser(String name) throws ClassNotFoundException {
-        Class.forName("org.postgresql.Driver");
-        String query = "INSERT INTO public.User (name) VALUES (?)";
-        try (Connection connection = DriverManager.getConnection(URL,USER,PASSWORD)){
-            if(connection !=null){
-                System.out.println("connected");
+    public UserDAO(){
+        sessionFactory = new Configuration().configure().buildSessionFactory();
+    }
+
+    public void saveUser(User user){
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()){
+            transaction = session.beginTransaction();
+            session.persist(user);
+            transaction.commit();
+        } catch (Exception e){
+            if (transaction!=null){
+                transaction.rollback();
             }
-            else{
-                System.out.println("Failed to make connection");
-            }
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, name);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
     public User getUserById(int id) {
-        String query = "SELECT * FROM public.User WHERE id = ?";
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return new User(
-                        resultSet.getInt("id"),
-                        resultSet.getString("name"),
-                        resultSet.getTimestamp("creation_date")
-                );
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(User.class, id);
         }
-        return null;
     }
-
     public void deleteUserById(int id) {
-        String query = "DELETE FROM public.User WHERE id = ?";
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeUpdate();
-            System.out.println("deleted user by id " + id);
-        } catch (SQLException e) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            User user = session.get(User.class, id);
+            if (user != null) {
+                session.remove(user);
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
             e.printStackTrace();
         }
     }
-    public void retrieveAllUsers(){
-        String query = "SELECT * FROM public.User";
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-
+    public void retrieveAllUsers() {
+        try (Session session = sessionFactory.openSession()) {
+            List<User> users = session.createQuery("from User", User.class).list();
             System.out.println("ID | Name       | Creation Date");
             System.out.println("---|------------|--------------------------");
-           while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
-                Timestamp creationDate = resultSet.getTimestamp("creation_date");
-
-                System.out.printf("%-3d| %-10s | %-25s%n", id, name, creationDate);
+            for (User user : users) {
+                System.out.printf("%-3d| %-10s | %-25s%n", user.getId(), user.getName(), user.getCreationDate());
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
-
-
+    public void updateUserAndTickets(User user, TicketType ticketType) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            session.merge(user);
+            TicketDAO ticketDAO = new TicketDAO();
+            List<Ticket> tickets = ticketDAO.getTicketsByUserId(user.getId());
+            for (Ticket ticket : tickets) {
+                ticket.setTicketType(ticketType);
+                session.merge(ticket);
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
 }
