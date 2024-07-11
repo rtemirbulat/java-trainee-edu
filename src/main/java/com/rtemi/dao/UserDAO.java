@@ -2,17 +2,20 @@ package com.rtemi.dao;
 
 import com.rtemi.model.User;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
 public class UserDAO {
-    private static final String URL = "jdbc:postgresql://:5432/my_ticket_service_db";
-    private static final String USER = "";
-    private static final String PASSWORD = "";
+    private final DataSource dataSource;
+
+    public UserDAO(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     public void saveUser(String name) throws ClassNotFoundException {
         Class.forName("org.postgresql.Driver");
         String query = "INSERT INTO public.User (name) VALUES (?)";
-        try (Connection connection = DriverManager.getConnection(URL,USER,PASSWORD)){
+        try (Connection connection = dataSource.getConnection()){
             if(connection !=null){
                 System.out.println("connected");
             }
@@ -29,7 +32,7 @@ public class UserDAO {
 
     public User getUserById(int id) {
         String query = "SELECT * FROM public.User WHERE id = ?";
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -48,7 +51,7 @@ public class UserDAO {
 
     public void deleteUserById(int id) {
         String query = "DELETE FROM public.User WHERE id = ?";
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
@@ -59,7 +62,7 @@ public class UserDAO {
     }
     public void retrieveAllUsers(){
         String query = "SELECT * FROM public.User";
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
 

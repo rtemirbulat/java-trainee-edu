@@ -2,19 +2,23 @@ package com.rtemi.dao;
 
 import com.rtemi.model.Ticket;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TicketDAO {
-    private static final String URL = "jdbc:postgresql://:5432/my_ticket_service_db";
-    private static final String USER = "admin";
-    private static final String PASSWORD = "secret";
+    private final DataSource dataSource;
+
+    public TicketDAO(DataSource dataSource){
+        this.dataSource = dataSource;
+    }
 
     public void saveTicket(int userId, String ticketType) {
         String query = "INSERT INTO public.Ticket (user_id, ticket_type) VALUES (?, ?::ticket_type)";
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)){
+
             preparedStatement.setInt(1, userId);
             preparedStatement.setString(2, ticketType);
             preparedStatement.executeUpdate();
@@ -23,10 +27,10 @@ public class TicketDAO {
         }
     }
 
-    public Ticket getTicketById(int id) {
+    public Ticket getTicketById(int id) throws SQLException {
         String query = "SELECT * FROM public.Ticket WHERE id = ?";
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query)){
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -46,8 +50,8 @@ public class TicketDAO {
     public List<Ticket> getTicketsByUserId(int userId) {
         String query = "SELECT * FROM public.Ticket WHERE user_id = ?";
         List<Ticket> tickets = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)){
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -66,8 +70,8 @@ public class TicketDAO {
 
     public void updateTicketType(int id, String ticketType) {
         String query = "UPDATE public.Ticket SET ticket_type = ?::ticket_type WHERE id = ?";
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)){
             preparedStatement.setString(1, ticketType);
             preparedStatement.setInt(2, id);
             preparedStatement.executeUpdate();
@@ -78,9 +82,9 @@ public class TicketDAO {
 
     public void retrieveAllTickets(){
         String query = "SELECT * FROM public.ticket";
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(query);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)){
+             ResultSet resultSet = preparedStatement.executeQuery();
 
             System.out.println("ID | User ID | Ticket Type | Creation Date");
             System.out.println("---|---------|-------------|--------------------------");

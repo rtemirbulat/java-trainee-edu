@@ -1,23 +1,24 @@
 package com.rtemi.services;
 
+import com.rtemi.config.AppConfiguration;
 import com.rtemi.dao.TicketDAO;
 import com.rtemi.dao.UserDAO;
 import com.rtemi.model.Ticket;
 import com.rtemi.model.User;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.sql.SQLException;
 import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TicketServiceDB {
-    public static void main(String[] args) throws ClassNotFoundException {
-        UserDAO userDAO = new UserDAO();
-        TicketDAO ticketDAO = new TicketDAO();
-
-        AtomicInteger idCounter = new AtomicInteger();
-
-
+    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfiguration.class);
+        UserDAO userDAO =  context.getBean(UserDAO.class);
+        TicketDAO ticketDAO = context.getBean(TicketDAO.class);
         Scanner sc = new Scanner(System.in);
 
         int choice;

@@ -1,6 +1,7 @@
 package com.rtemi.model;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 public class Ticket {
     private int id;
@@ -12,7 +13,7 @@ public class Ticket {
         this.id = id;
         this.userId = userId;
         this.ticketType = ticketType;
-        this.creationDate = creationDate;
+        this.creationDate = Timestamp.from(Instant.now());
     }
 
     public int getId() {
