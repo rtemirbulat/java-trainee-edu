@@ -1,42 +1,41 @@
 package com.rtemi.dao;
-import com.rtemi.model.Ticket;
-import com.rtemi.model.User;
+
 import com.rtemi.model.enums.TicketType;
+import jakarta.transaction.Transactional;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 
 import java.util.List;
 
 public class UserDAO {
-    private SessionFactory sessionFactory;
-
-    public UserDAO(){
-        sessionFactory = new Configuration().configure().buildSessionFactory();
+    private final boolean activated;
+    public UserDAO(boolean activated) {
+        this.activated = activated;
     }
 
-    public void saveUser(User user){
+    public void saveUser(User user) {
         Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()){
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             session.persist(user);
             transaction.commit();
-        } catch (Exception e){
-            if (transaction!=null){
+        } catch (Exception e) {
+            if (transaction != null) {
                 transaction.rollback();
             }
             e.printStackTrace();
         }
     }
+
     public User getUserById(int id) {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
             return session.get(User.class, id);
         }
     }
+
     public void deleteUserById(int id) {
         Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             User user = session.get(User.class, id);
             if (user != null) {
@@ -50,8 +49,9 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
+
     public void retrieveAllUsers() {
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
             List<User> users = session.createQuery("from User", User.class).list();
             System.out.println("ID | Name       | Creation Date");
             System.out.println("---|------------|--------------------------");
@@ -60,9 +60,10 @@ public class UserDAO {
             }
         }
     }
-    public void updateUserAndTickets(User user, TicketType ticketType) {
+
+    public void updateUserAndTicketType(User user, TicketType ticketType) {
         Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             session.merge(user);
             TicketDAO ticketDAO = new TicketDAO();
@@ -76,4 +77,6 @@ public class UserDAO {
             if (transaction != null) {
                 transaction.rollback();
             }
+        }
+    }
 }
