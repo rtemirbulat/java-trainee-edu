@@ -1,5 +1,6 @@
 package com.rtemi.dao;
 
+import com.rtemi.model.enums.Status;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -7,17 +8,20 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table (name = "user")
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private int id;
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
-    @Column(name="creation_date")
+    @Column(name = "creation_date")
     private LocalDateTime creationDate;
-    @OneToMany(mappedBy = "userId",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Status status;
+
+
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Ticket> ticketList;
 
     public User() {
@@ -33,6 +37,14 @@ public class User {
         this.id = id;
         this.name = name;
         this.creationDate = creationDate;
+        this.ticketList = ticketList;
+    }
+
+    public User(int id, String name, LocalDateTime creationDate, Status status, List<Ticket> ticketList) {
+        this.id = id;
+        this.name = name;
+        this.creationDate = creationDate;
+        this.status = status;
         this.ticketList = ticketList;
     }
 
@@ -66,6 +78,14 @@ public class User {
 
     public void setTicketList(List<Ticket> ticketList) {
         this.ticketList = ticketList;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     @Override

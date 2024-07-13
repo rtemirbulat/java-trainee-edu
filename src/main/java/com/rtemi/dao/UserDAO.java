@@ -1,5 +1,6 @@
 package com.rtemi.dao;
 
+import com.rtemi.model.enums.Status;
 import com.rtemi.model.enums.TicketType;
 import jakarta.transaction.Transactional;
 import org.hibernate.Session;
@@ -9,8 +10,24 @@ import java.util.List;
 
 public class UserDAO {
     private final boolean activated;
+
     public UserDAO(boolean activated) {
         this.activated = activated;
+    }
+
+    @Transactional
+    public void updateUserAndSaveTickets(User user, Ticket ticket){
+        if(!activated) {
+            throw new UnsupportedOperationException("Update not supported.");
+        }
+        if (user == null) {
+            throw new IllegalArgumentException("User must not be null.");
+        }
+        if (ticket != null) {
+            UserDAO.updateUserAndSaveTicket(user, ticket);
+        } else {
+            throw new IllegalArgumentException("Ticket must not be null.");
+        }
     }
 
     public void saveUser(User user) {
@@ -77,6 +94,25 @@ public class UserDAO {
             if (transaction != null) {
                 transaction.rollback();
             }
+        }
+    }
+    public static void updateUserAndSaveTicket(User user, Ticket ticket) {
+        Transaction transaction = null;
+        try (Session session = SessionFactoryProvider.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            if (user.getStatus() == Status.ACTIVATED) {
+                session.merge(user);
+                ticket.setUserId(user.getId());
+                session.persist(ticket);
+            }
+
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
         }
     }
 }

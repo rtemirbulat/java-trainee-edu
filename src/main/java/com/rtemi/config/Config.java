@@ -1,22 +1,26 @@
 package com.rtemi.config;
 
 
-import com.rtemi.dao.TicketDAO;
+import com.rtemi.connection.ConnectionPostgres;
 import com.rtemi.dao.UserDAO;
-import org.postgresql.ds.PGSimpleDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.sql.DataSource;
+import org.springframework.context.annotation.PropertySource;
 
 @Configuration
+@PropertySource("classpath:application.properties")
 public class Config {
     @Bean
-    public DataSource retrieveDataSource(){
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setUser("postgres");
-        dataSource.setPassword("6OHb4UakpeCCrBZq35ag");
-        dataSource.setURL("jdbc:postgresql://database-2.ctcue0gs2qe2.eu-central-1.rds.amazonaws.com:5432/my_ticket_service_db");
-        return dataSource;
+    public ConnectionPostgres connectionPostgres(
+            @Value("${spring.datasource.url}") String url,
+            @Value("${spring.datasource.username}") String username,
+            @Value("${spring.datasource.password}") String password){
+
+        return new ConnectionPostgres(url,username,password);
+    }
+    @Bean
+    public UserDAO userDAO(@Value("${service.update-enabled:true") boolean activated){
+        return new UserDAO(activated);
     }
 }
