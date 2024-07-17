@@ -2,6 +2,8 @@ package com.rtemi.dao;
 
 import com.rtemi.model.enums.TicketType;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -16,7 +18,8 @@ public class Ticket {
     @Column(name="user_id")
     private int userId;
     @Column(name="ticket_type")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     private TicketType ticketType;
     @Column(name="creation_date")
     private LocalDateTime creationTime;

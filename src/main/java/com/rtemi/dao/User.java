@@ -2,13 +2,15 @@ package com.rtemi.dao;
 
 import com.rtemi.model.enums.Status;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "user")
+@Table(name="\"user\"")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +20,10 @@ public class User {
     private String name;
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
+
+    @Column(name = "status")
+    @Enumerated
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     private Status status;
 
 
