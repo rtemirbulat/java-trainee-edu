@@ -1,69 +1,40 @@
 package com.rtemi.services;
 
-import com.rtemi.interfaces.Printable;
-import com.rtemi.model.ConcertTicket;
-import com.rtemi.model.TicketUID;
-import com.rtemi.model.entity.Admin;
-import com.rtemi.model.entity.User;
+import com.rtemi.dao.Ticket;
+import com.rtemi.model.enums.TicketType;
+import com.rtemi.repository.TicketRepository;
+import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 
-public class TicketService extends TicketUID implements Printable {
-    private static List<ConcertTicket> tickets;
+@Service
+public class TicketService {
+    private final TicketRepository ticketRepository;
 
-    public static void main(String[] args) {
-
-        BigDecimal weight = new BigDecimal(4.200);
-        BigDecimal price = new BigDecimal(99.99);
-
-        ConcertTicket nonEmptyTicket = new ConcertTicket("123", "Plaza", 123, true, 'C', weight, price);
-        tickets = Arrays.asList(nonEmptyTicket);
-
-        // Setting ID to ANY class (goal 1)
-        TicketService id = new TicketService();
-        id.setTicketUid(1);
-        System.out.println("class id: id.getConcertTicketId()");
-        System.out.println();
-
-
-        // Printing contents (goal 2 - default and overridden)
-        System.out.println("Print content:");
-        id.printContent();
-        System.out.println("Overridden print content");
-        nonEmptyTicket.printContent();
-
-        // Setting time and sector (goal 3)
-        nonEmptyTicket.setTicketTime(1231123);
-        nonEmptyTicket.setSector('A');
-        System.out.println("All values from Ticket:");
-        System.out.println(nonEmptyTicket.getAllValues());
-        System.out.println();
-
-        // .share() method (goal 4)
-        nonEmptyTicket.share("88005553535");
-        nonEmptyTicket.share("88005553535","patrickjane@mentalist.com");
-
-        // getTicket() and checkTicket(), printRole() (goal 5)
-        User user = new User();
-        Admin admin = new Admin();
-        user.printRole();
-        user.getTicket(nonEmptyTicket);
-        user.printContent();
-        admin.printRole();
-        admin.checkTicket(nonEmptyTicket);
-        admin.printContent();
-
-
+    public TicketService(TicketRepository ticketRepository) {
+        this.ticketRepository = ticketRepository;
+    }
+    public void saveTicket(Ticket ticket){
+        ticketRepository.save(ticket.getUserId(),ticket.getTicketType(),ticket.getCreationTime());
+    }
+    public Ticket getTicketById(int ticketId){
+        return ticketRepository.findById(ticketId)
+                .orElseThrow(()->new IllegalArgumentException("Ticket with id not found"));
 
     }
 
-    public static ConcertTicket getTicketByStadiumSector(char sector) {
-        return tickets.stream()
-                .filter(ticket -> ticket.getSector() == sector)
-                .findAny()
-                .orElse(null);
+    public List<Ticket> getTicketsByUserId(int userId) {
+        return ticketRepository.findByUserId(userId);
     }
-
+    public Ticket updateTicketType(int ticketId, TicketType ticketType) {
+        Ticket ticketToUpdate = getTicketById(ticketId);
+        ticketToUpdate.setTicketType(ticketType);
+        ticketRepository.update(ticketToUpdate.getId(),ticketToUpdate.getUserId(),
+                ticketToUpdate.getTicketType(),ticketToUpdate.getCreationTime());
+        return ticketToUpdate;
+    }
+    public void deleteTicketsByTicketId(int ticketId){
+        getTicketById(ticketId);
+        ticketRepository.deleteById(ticketId);
+    }
 }
