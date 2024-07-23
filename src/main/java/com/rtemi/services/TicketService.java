@@ -14,8 +14,9 @@ public class TicketService {
     public TicketService(TicketRepository ticketRepository) {
         this.ticketRepository = ticketRepository;
     }
-    public void saveTicket(Ticket ticket){
+    public Ticket saveTicket(Ticket ticket){
         ticketRepository.save(ticket.getUserId(),ticket.getTicketType(),ticket.getCreationTime());
+        return ticket;
     }
     public Ticket getTicketById(int ticketId){
         return ticketRepository.findById(ticketId)
